@@ -139,6 +139,7 @@ const LoginForm = () => {
                             <h4 class="elementor-heading-title elementor-size-default"></h4>
                           </div>
                         </div>
+
                         <div className="container">
                           <Form>
                             <div className="row d-flex justify-content-center">
@@ -202,6 +203,7 @@ const LoginForm = () => {
                             </div>
                           </Form>
                         </div>
+                        
                       </div>
                     </div>
                   </div>

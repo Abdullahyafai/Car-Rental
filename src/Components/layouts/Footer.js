@@ -189,6 +189,12 @@ support@naveedpoonawala.com</span>
 															<span class="elementor-icon-list-text">Rent Truck</span>
 														</a>
 													</li>
+													<li class="elementor-icon-list-item">
+														<a href="/faq">
+
+															<span class="elementor-icon-list-text">FAQ</span>
+														</a>
+													</li>
 												</ul>
 											</div>
 										</div>

@@ -280,6 +280,19 @@ const logout = () =>{
                               About Us
                             </Link>
                           </li>
+                           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-16">
+                            <Link
+                              to="/gallery"
+                              className={`elementor-item ${
+                                pathname == "/gallery"
+                                  ? "elementor-item-active"
+                                  : ""
+                              }`}
+                            >
+                              Gallery
+                            </Link>
+                          </li>
+                        
                           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-18">
                             <Link
                               to="/Cars"
