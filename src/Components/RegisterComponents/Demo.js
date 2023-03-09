@@ -139,7 +139,12 @@ export default function BasicTabs() {
       .catch((error) => {
         setLoader(false);
         console.log(error, "international user error");
-        Swal.fire("Something went wrong");
+        if(error?.response?.data?.errors?.email){   
+          Swal.fire(error?.response?.data?.errors?.email[0])
+        }
+        else if(error?.response?.data?.errors?.password){   
+          Swal.fire(error?.response?.data?.errors?.password[0])
+        }
       });
   };
 
@@ -179,7 +184,13 @@ export default function BasicTabs() {
       .catch((error) => {
         setLoader(false);
         console.log(error, "local user error");
-        Swal.fire("Something went wrong");
+        if(error?.response?.data?.errors?.email){   
+          Swal.fire(error?.response?.data?.errors?.email[0])
+        }
+        else if(error?.response?.data?.errors?.password){   
+          Swal.fire(error?.response?.data?.errors?.password[0])
+        }
+        // Swal.fire("Something went wrong");
       });
   };
 

@@ -49,8 +49,8 @@ const LoginForm = () => {
       .catch((error) => {
         setLoader(false);
         console.log(error, "Login error");
-        // Swal.fire(error?.response?.data?.erorrs?.email[0])
-        setErrors(error?.response?.data?.errors);
+        setErrors(error?.response?.data);
+        Swal.fire(error?.response?.data?.message)
       });
   };
 

@@ -113,9 +113,11 @@ const FAQ = () => {
                   </Form.Group>
                 
                 </div>
-              <button  type="submit" style={{backgroundColor: "white", color: "black"}}>
+                <div className="col-md-12">
+              <button  type="submit" style={{backgroundColor: "white", color: "black", width: "100%"}}>
                 Submit
               </button>
+              </div>
               </div>
             </Form>
           </div>
