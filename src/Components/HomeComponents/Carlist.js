@@ -5,6 +5,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
+import MultiRangeSlider from "../MultiSlider/MultiRangeSlider";
 
 export const Carlist = () => {
   const [carlist, setcar] = useState([]);
@@ -13,8 +14,11 @@ export const Carlist = () => {
   const [carimages, setcarimages] = useState([]);
   const [Search, setSearch] = useState("");
   const [CarBrand, setCarBrand] = useState("");
+  const [Filter, setFilter] = useState([]);
+  const [Range, setRange] = useState({ min: 0, max: 5000 });
 
-  console.log(carimages);
+  // console.log(Range.max, "Range");
+
   const navigate = useNavigate();
 
   const setDataId = (dataid) => {
@@ -72,10 +76,26 @@ export const Carlist = () => {
       },
     };
     axios(config).then((response) => {
-        console.log(response, "brand list api");
-        setBrand(response?.data);
+      console.log(response, "brand list api");
+      setBrand(response?.data);
     });
   }, []);
+
+
+  const handleRangeChange = (values) => {
+    setRange(values);
+  };
+
+const filter = () => {
+  const config = {
+    url: `https://carrentalportal.arm-sc.com/api/car/filter?r1=${Range.min}&r2=${Range.max}&car_brand=${CarBrand}&search=${Search}`,
+    method: "get",
+  };
+  axios(config).then((response) => {
+    console.log(response?.data?.filter_data, "Filter api");
+    setcar(response?.data?.filter_data);
+  });
+}
 
   // console.log('sd');
 
@@ -87,37 +107,56 @@ export const Carlist = () => {
         data-element_type="section"
       >
         <div className="container mb-3">
-        <div className="card w-100 p-5" style={{boxShadow: "0px 0px 5px 5px lightgray"}}>
-          <div className="card-header mb-2 pt-0">
-            <h4 className="text-center">Advance Filter</h4>
+          <div
+            className="card w-100 p-5"
+            style={{ boxShadow: "0px 0px 5px 5px lightgray" }}
+          >
+            <div className="card-header mb-2 pt-0">
+              <h4 className="text-center">Advance Filter</h4>
+            </div>
+            <div className="row mt-2">
+              <div className="col-md-3">
+                <Form.Label>Set Price</Form.Label>
+                <MultiRangeSlider
+                  min={0}
+                  max={5000}
+                  onChange={handleRangeChange}
+                  // onChange={({ min, max }) =>
+                  //   SetRange(min, max)
+                  // }
+                />
+              </div>
+              <div className="col-md-3">
+                <Form.Label>Select Car Brands</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(e) => setCarBrand(e.target.value)}
+                >
+                  <option>Select Car Brands</option>
+                  {Brand?.map((e) => {
+                    return (
+                      <>
+                        <option value={e?.brand_Name}>{e?.brand_name}</option>
+                      </>
+                    );
+                  })}
+                </Form.Select>
+              </div>
+              <div className="col-md-3">
+                <Form.Label>Search</Form.Label>
+                <input
+                  type="search"
+                  placeholder="search here"
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <div className="col-md-3">
+                <button className="btn w-100 h-50" style={{ marginTop: "2em" }} onClick={filter}>
+                  Filter
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="row mt-2">
-            <div className="col-md-3">
-              <Form.Label>Set Price</Form.Label>
-              <Form.Range className="py-3"/>
-            </div>
-            <div className="col-md-3">
-              <Form.Label>Select Car Brands</Form.Label>
-              <Form.Select aria-label="Default select example" onChange={(e)=>setCarBrand(e.target.value)}>
-                <option>Select Car Brands</option>
-                {Brand?.map((e)=>{
-                  return(
-                  <>
-                <option value={e?.brand_Name}>{e?.brand_name}</option>
-                </>
-                  )
-                })}
-              </Form.Select>
-            </div>
-            <div className="col-md-3">
-            <Form.Label>Search</Form.Label>
-              <input type="search" placeholder="search here" onChange={(e)=>setSearch(e.target.value)}/>
-            </div>
-             <div className="col-md-3">
-           <button className="btn w-100 h-50" style={{marginTop: "2em"}}>Filter</button>
-            </div>
-          </div>
-        </div>
         </div>
 
         <div class="elementor-container elementor-column-gap-default">
@@ -171,7 +210,9 @@ export const Carlist = () => {
       <div className="Card">
         <Container>
           <Row>
-            {carlist.map(function (value, index) {
+            {carlist?.length != 0 ?
+            <>
+            {carlist?.map(function (value, index) {
               let count;
               if (window.location.pathname == "/Cars") {
                 count = 10;
@@ -337,6 +378,12 @@ export const Carlist = () => {
                 );
               }
             })}
+            </>
+            :
+            <>
+            <h4 className="text-center">No Result Found</h4>
+            </>
+          }
           </Row>
         </Container>
       </div>

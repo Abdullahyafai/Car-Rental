@@ -20,7 +20,7 @@ export const Header = () => {
 
 const logout = () =>{
   localStorage.clear();
-  navigate("/");
+  navigate("/Login");
 }
 
   return (
