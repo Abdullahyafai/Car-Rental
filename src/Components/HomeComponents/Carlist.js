@@ -8,8 +8,11 @@ import Form from "react-bootstrap/Form";
 
 export const Carlist = () => {
   const [carlist, setcar] = useState([]);
+  const [Brand, setBrand] = useState([]);
   const [CarDetail, setCarDetail] = useState([]);
   const [carimages, setcarimages] = useState([]);
+  const [Search, setSearch] = useState("");
+  const [CarBrand, setCarBrand] = useState("");
 
   console.log(carimages);
   const navigate = useNavigate();
@@ -59,6 +62,21 @@ export const Carlist = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const config = {
+      url: `https://carrentalportal.arm-sc.com/api/brands/list`,
+      method: "POST",
+      data: {
+        usernameapi: "admin",
+        passwordapi: "admin",
+      },
+    };
+    axios(config).then((response) => {
+        console.log(response, "brand list api");
+        setBrand(response?.data);
+    });
+  }, []);
+
   // console.log('sd');
 
   return (
@@ -80,19 +98,20 @@ export const Carlist = () => {
             </div>
             <div className="col-md-3">
               <Form.Label>Select Car Brands</Form.Label>
-              <Form.Select aria-label="Default select example">
+              <Form.Select aria-label="Default select example" onChange={(e)=>setCarBrand(e.target.value)}>
                 <option>Select Car Brands</option>
-                <option value="Audi">Audi</option>
-                <option value="Mercedies">Mercedies</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Honda">Honda</option>
-                <option value="MG">MG</option>
-                <option value="Kia">Kia</option>
+                {Brand?.map((e)=>{
+                  return(
+                  <>
+                <option value={e?.brand_Name}>{e?.brand_name}</option>
+                </>
+                  )
+                })}
               </Form.Select>
             </div>
             <div className="col-md-3">
             <Form.Label>Search</Form.Label>
-              <input type="search" placeholder="search here" />
+              <input type="search" placeholder="search here" onChange={(e)=>setSearch(e.target.value)}/>
             </div>
              <div className="col-md-3">
            <button className="btn w-100 h-50" style={{marginTop: "2em"}}>Filter</button>
