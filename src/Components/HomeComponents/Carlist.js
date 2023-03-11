@@ -5,13 +5,19 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
+import MultiRangeSlider from "../MultiRangeSlider/MultiRangeSlider";
 
 export const Carlist = () => {
   const [carlist, setcar] = useState([]);
   const [CarDetail, setCarDetail] = useState([]);
   const [carimages, setcarimages] = useState([]);
+  const [Range, setRange] = useState(null);
 
-  console.log(carimages);
+
+  // console.log(Range, "Range");
+
+
+  // console.log(carimages);
   const navigate = useNavigate();
 
   const setDataId = (dataid) => {
@@ -76,7 +82,11 @@ export const Carlist = () => {
           <div className="row mt-2">
             <div className="col-md-3">
               <Form.Label>Set Price</Form.Label>
-              <Form.Range className="py-3"/>
+              <MultiRangeSlider
+                    min={0}
+                    max={1000}
+                    onChange={({ min, max }) => setRange({ min, max })}
+                  />
             </div>
             <div className="col-md-3">
               <Form.Label>Select Car Brands</Form.Label>
