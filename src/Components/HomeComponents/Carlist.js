@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,8 +7,11 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import MultiRangeSlider from "../MultiSlider/MultiRangeSlider";
+import ReactPaginate from "react-paginate";
 
 export const Carlist = () => {
+  const [CurrentIndex, setCurrentIndex] = useState(0);
+  const [Data, setData] = useState([]);
   const [carlist, setcar] = useState([]);
   const [Brand, setBrand] = useState([]);
   const [CarDetail, setCarDetail] = useState([]);
@@ -20,6 +24,14 @@ export const Carlist = () => {
   // console.log(Range.max, "Range");
 
   const navigate = useNavigate();
+
+  const handleclick = (id) => {
+    if (id === 1) {
+      setCurrentIndex(CurrentIndex + 1);
+    } else {
+      setCurrentIndex(CurrentIndex - 1);
+    }
+  };
 
   const setDataId = (dataid) => {
     // alert(dataid)
@@ -59,12 +71,17 @@ export const Carlist = () => {
       },
     };
     axios(options).then((response) => {
-      //   let abc=JSON.parse(response.data.car_images);
-      //   console.log(abc);
-
+      console.log(response, "car list");
+      const gruoupData = [];
+      for (let i = 0; i < response?.data?.length; i += 2) {
+        gruoupData.push(response?.data?.slice(i, i + 2));
+      }
+      setData(gruoupData);
       setcar(response.data);
     });
   }, []);
+
+  // console.log(Data, "Data pagination")
 
   useEffect(() => {
     const config = {
@@ -81,22 +98,22 @@ export const Carlist = () => {
     });
   }, []);
 
-
   const handleRangeChange = (values) => {
     setRange(values);
   };
 
-const filter = () => {
-  const config = {
-    url: `https://carrentalportal.arm-sc.com/api/car/filter?r1=${Range.min}&r2=${Range.max}&car_brand=${CarBrand}&search=${Search}`,
-    method: "get",
+  const filter = () => {
+    const config = {
+      url: `https://carrentalportal.arm-sc.com/api/car/filter?r1=${Range.min}&r2=${Range.max}&car_brand=${CarBrand}&search=${Search}`,
+      method: "get",
+    };
+    axios(config).then((response) => {
+      console.log(response?.data?.filter_data, "Filter api");
+      setcar(response?.data?.filter_data);
+    });
   };
-  axios(config).then((response) => {
-    console.log(response?.data?.filter_data, "Filter api");
-    setcar(response?.data?.filter_data);
-  });
-}
 
+  const Next = () => {};
   // console.log('sd');
 
   return (
@@ -151,7 +168,11 @@ const filter = () => {
                 />
               </div>
               <div className="col-md-3">
-                <button className="btn w-100 h-50" style={{ marginTop: "2em" }} onClick={filter}>
+                <button
+                  className="btn w-100 h-50"
+                  style={{ marginTop: "2em" }}
+                  onClick={filter}
+                >
                   Filter
                 </button>
               </div>
@@ -210,180 +231,190 @@ const filter = () => {
       <div className="Card">
         <Container>
           <Row>
-            {carlist?.length != 0 ?
-            <>
-            {carlist?.map(function (value, index) {
-              let count;
-              if (window.location.pathname == "/Cars") {
-                count = 10;
-              } else {
-                count = 6;
-              }
+            {carlist?.length != 0 ? (
+              <>
+                {Data[CurrentIndex]?.map(function (value, index) {
+                  let count;
+                  if (window.location.pathname == "/Cars") {
+                    count = 10;
+                  } else {
+                    count = 6;
+                  }
 
-              if (index < count) {
-                return (
-                  <>
-                    <Col sm={6}>
-                      <div className="Car-Card">
-                        <Row>
-                          <Col sm={4}>
-                            <img
-                              decoding="async"
-                              width="512"
-                              height="512"
-                              src={`${process.env.REACT_APP_IMAGE_URL}${
-                                JSON.parse(value.car_images)[0]
-                              }`}
-                              class="attachment-full size-full wp-image-754"
-                              alt=""
-                              loading="lazy"
-                              srcset={`${process.env.REACT_APP_IMAGE_URL}${
-                                JSON.parse(value.car_images)[0]
-                              } 512w , ${process.env.REACT_APP_IMAGE_URL}${
-                                JSON.parse(value.car_images)[0]
-                              } 300w,${process.env.REACT_APP_IMAGE_URL}${
-                                JSON.parse(value.car_images)[0]
-                              } 150w`}
-                              sizes="(max-width: 512px) 100vw, 512px"
-                            />
-                          </Col>
-                          <Col sm={8}>
-                            <div class="elementor-widget-wrap elementor-element-populated">
-                              <div
-                                class="elementor-element elementor-element-026b836 elementor-widget elementor-widget-heading"
-                                data-id="026b836"
-                                data-element_type="widget"
-                                data-widget_type="heading.default"
-                              >
-                                <div class="elementor-widget-container">
-                                  <h2 class="elementor-heading-title elementor-size-default">
-                                    {value.car_make}
-                                    {value.car_name}({value.model_year})
-                                  </h2>
-                                </div>
-                              </div>
-                              <div
-                                class="elementor-element elementor-element-87c4ec3 elementor-widget elementor-widget-text-editor"
-                                data-id="87c4ec3"
-                                data-element_type="widget"
-                                data-widget_type="text-editor.default"
-                              >
-                                <div class="elementor-widget-container">
-                                  <p
-                                    dangerouslySetInnerHTML={{
-                                      __html: value.car_description,
-                                    }}
-                                  ></p>
-                                </div>
-                              </div>
-                              <div
-                                class="elementor-element elementor-element-e7f154c elementor-widget__width-auto elementor-absolute elementor-widget elementor-widget-elementskit-heading"
-                                data-id="e7f154c"
-                                data-element_type="widget"
-                                data-settings='{"_position":"absolute"}'
-                                data-widget_type="elementskit-heading.default"
-                              >
-                                <div class="elementor-widget-container">
-                                  <div class="ekit-wid-con">
-                                    <div class="ekit-heading elementskit-section-title-wraper text_left   ekit_heading_tablet-   ekit_heading_mobile-">
-                                      <a href="#">
-                                        <h2 class="ekit-heading--title elementskit-section-title ">
-                                          <span>
-                                            <span>${value.car_rent_price}</span>
-                                          </span>{" "}
-                                          / {value.car_rent_type}
-                                        </h2>
-                                      </a>
+                  if (index < count) {
+                    return (
+                      <>
+                        <Col sm={6}>
+                          <div className="Car-Card">
+                            <Row>
+                              <Col sm={4}>
+                                <img
+                                  decoding="async"
+                                  width="512"
+                                  height="512"
+                                  src={`${process.env.REACT_APP_IMAGE_URL}${
+                                    JSON.parse(value.car_images)[0]
+                                  }`}
+                                  class="attachment-full size-full wp-image-754"
+                                  alt=""
+                                  loading="lazy"
+                                  srcset={`${process.env.REACT_APP_IMAGE_URL}${
+                                    JSON.parse(value.car_images)[0]
+                                  } 512w , ${process.env.REACT_APP_IMAGE_URL}${
+                                    JSON.parse(value.car_images)[0]
+                                  } 300w,${process.env.REACT_APP_IMAGE_URL}${
+                                    JSON.parse(value.car_images)[0]
+                                  } 150w`}
+                                  sizes="(max-width: 512px) 100vw, 512px"
+                                />
+                              </Col>
+                              <Col sm={8}>
+                                <div class="elementor-widget-wrap elementor-element-populated">
+                                  <div
+                                    class="elementor-element elementor-element-026b836 elementor-widget elementor-widget-heading"
+                                    data-id="026b836"
+                                    data-element_type="widget"
+                                    data-widget_type="heading.default"
+                                  >
+                                    <div class="elementor-widget-container">
+                                      <h2 class="elementor-heading-title elementor-size-default">
+                                        {value.car_make}
+                                        {value.car_name}({value.model_year})
+                                      </h2>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="elementor-element elementor-element-87c4ec3 elementor-widget elementor-widget-text-editor"
+                                    data-id="87c4ec3"
+                                    data-element_type="widget"
+                                    data-widget_type="text-editor.default"
+                                  >
+                                    <div class="elementor-widget-container">
+                                      <p
+                                        dangerouslySetInnerHTML={{
+                                          __html: value.car_description,
+                                        }}
+                                      ></p>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="elementor-element elementor-element-e7f154c elementor-widget__width-auto elementor-absolute elementor-widget elementor-widget-elementskit-heading"
+                                    data-id="e7f154c"
+                                    data-element_type="widget"
+                                    data-settings='{"_position":"absolute"}'
+                                    data-widget_type="elementskit-heading.default"
+                                  >
+                                    <div class="elementor-widget-container">
+                                      <div class="ekit-wid-con">
+                                        <div class="ekit-heading elementskit-section-title-wraper text_left   ekit_heading_tablet-   ekit_heading_mobile-">
+                                          <a href="#">
+                                            <h2 class="ekit-heading--title elementskit-section-title ">
+                                              <span>
+                                                <span>
+                                                  ${value.car_rent_price}
+                                                </span>
+                                              </span>{" "}
+                                              / {value.car_rent_type}
+                                            </h2>
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="elementor-element elementor-element-80e889c elementor-icon-list--layout-traditional elementor-list-item-link-full_width elementor-widget elementor-widget-icon-list"
+                                    data-id="80e889c"
+                                    data-element_type="widget"
+                                    data-widget_type="icon-list.default"
+                                  >
+                                    <div class="elementor-widget-container">
+                                      <ul class="elementor-icon-list-items">
+                                        <li class="elementor-icon-list-item">
+                                          <span class="elementor-icon-list-icon">
+                                            <i
+                                              aria-hidden="true"
+                                              class="mdi mdi-seat-recline-extra"
+                                            ></i>{" "}
+                                          </span>
+                                          <span class="elementor-icon-list-text">
+                                            {value.no_of_seats} Seats
+                                          </span>
+                                        </li>
+                                        <li class="elementor-icon-list-item">
+                                          <span class="elementor-icon-list-icon">
+                                            <i
+                                              aria-hidden="true"
+                                              class="ion ion-md-snow"
+                                            ></i>{" "}
+                                          </span>
+                                          <span class="elementor-icon-list-text">
+                                            {value.drive}
+                                          </span>
+                                        </li>
+                                        <li class="elementor-icon-list-item">
+                                          <span class="elementor-icon-list-icon">
+                                            <i
+                                              aria-hidden="true"
+                                              class=" la la-tachometer"
+                                            ></i>{" "}
+                                          </span>
+                                          <span class="elementor-icon-list-text">
+                                            {value.fuel_type_primary}
+                                          </span>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="elementor-element elementor-element-a869ad9 elementor-align-left elementor-widget elementor-widget-button"
+                                    data-id="a869ad9"
+                                    data-element_type="widget"
+                                    data-widget_type="button.default"
+                                  >
+                                    <div class="elementor-widget-container">
+                                      <div class="elementor-button-wrapper">
+                                        <button
+                                          class="elementor-button-link elementor-button elementor-size-sm"
+                                          onClick={() => setDataId(value.id)}
+                                        >
+                                          <span class="elementor-button-content-wrapper">
+                                            <span class="elementor-button-icon elementor-align-icon-right">
+                                              <i
+                                                aria-hidden="true"
+                                                class="fas fa-chevron-right"
+                                              ></i>
+                                            </span>
+                                            <span class="elementor-button-text">
+                                              View Detail
+                                            </span>
+                                          </span>
+                                        </button>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div
-                                class="elementor-element elementor-element-80e889c elementor-icon-list--layout-traditional elementor-list-item-link-full_width elementor-widget elementor-widget-icon-list"
-                                data-id="80e889c"
-                                data-element_type="widget"
-                                data-widget_type="icon-list.default"
-                              >
-                                <div class="elementor-widget-container">
-                                  <ul class="elementor-icon-list-items">
-                                    <li class="elementor-icon-list-item">
-                                      <span class="elementor-icon-list-icon">
-                                        <i
-                                          aria-hidden="true"
-                                          class="mdi mdi-seat-recline-extra"
-                                        ></i>{" "}
-                                      </span>
-                                      <span class="elementor-icon-list-text">
-                                        {value.no_of_seats} Seats
-                                      </span>
-                                    </li>
-                                    <li class="elementor-icon-list-item">
-                                      <span class="elementor-icon-list-icon">
-                                        <i
-                                          aria-hidden="true"
-                                          class="ion ion-md-snow"
-                                        ></i>{" "}
-                                      </span>
-                                      <span class="elementor-icon-list-text">
-                                        {value.drive}
-                                      </span>
-                                    </li>
-                                    <li class="elementor-icon-list-item">
-                                      <span class="elementor-icon-list-icon">
-                                        <i
-                                          aria-hidden="true"
-                                          class=" la la-tachometer"
-                                        ></i>{" "}
-                                      </span>
-                                      <span class="elementor-icon-list-text">
-                                        {value.fuel_type_primary}
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-                              <div
-                                class="elementor-element elementor-element-a869ad9 elementor-align-left elementor-widget elementor-widget-button"
-                                data-id="a869ad9"
-                                data-element_type="widget"
-                                data-widget_type="button.default"
-                              >
-                                <div class="elementor-widget-container">
-                                  <div class="elementor-button-wrapper">
-                                    <button
-                                      class="elementor-button-link elementor-button elementor-size-sm"
-                                      onClick={() => setDataId(value.id)}
-                                    >
-                                      <span class="elementor-button-content-wrapper">
-                                        <span class="elementor-button-icon elementor-align-icon-right">
-                                          <i
-                                            aria-hidden="true"
-                                            class="fas fa-chevron-right"
-                                          ></i>
-                                        </span>
-                                        <span class="elementor-button-text">
-                                          View Detail
-                                        </span>
-                                      </span>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </Col>
-                  </>
-                );
-              }
-            })}
-            </>
-            :
-            <>
-            <h4 className="text-center">No Result Found</h4>
-            </>
-          }
+                              </Col>
+                            </Row>
+                          </div>
+                        </Col>
+                      </>
+                    );
+                  }
+                })}
+              </>
+            ) : (
+              <>
+                <h4 className="text-center">No Result Found</h4>
+              </>
+            )}
+            <di className="row">
+              <div className="col-md-6">
+                <button className="btn btn-primary w-25" onClick={() => handleclick(0)}>Previous</button>
+              </div>
+              <div className="col-md-6 d-flex justify-content-end align-items-end pe-0">
+                <button className="btn btn-primary w-25" onClick={() => handleclick(1)}>Next</button>
+              </div>
+            </di>
           </Row>
         </Container>
       </div>
