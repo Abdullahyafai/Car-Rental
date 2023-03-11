@@ -5,19 +5,20 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
-import MultiRangeSlider from "../MultiRangeSlider/MultiRangeSlider";
+import MultiRangeSlider from "../MultiSlider/MultiRangeSlider";
 
 export const Carlist = () => {
   const [carlist, setcar] = useState([]);
+  const [Brand, setBrand] = useState([]);
   const [CarDetail, setCarDetail] = useState([]);
   const [carimages, setcarimages] = useState([]);
-  const [Range, setRange] = useState(null);
+  const [Search, setSearch] = useState("");
+  const [CarBrand, setCarBrand] = useState("");
+  const [Filter, setFilter] = useState([]);
+  const [Range, setRange] = useState({ min: 0, max: 5000 });
 
+  // console.log(Range.max, "Range");
 
-  // console.log(Range, "Range");
-
-
-  // console.log(carimages);
   const navigate = useNavigate();
 
   const setDataId = (dataid) => {
@@ -65,6 +66,37 @@ export const Carlist = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const config = {
+      url: `https://carrentalportal.arm-sc.com/api/brands/list`,
+      method: "POST",
+      data: {
+        usernameapi: "admin",
+        passwordapi: "admin",
+      },
+    };
+    axios(config).then((response) => {
+      console.log(response, "brand list api");
+      setBrand(response?.data);
+    });
+  }, []);
+
+
+  const handleRangeChange = (values) => {
+    setRange(values);
+  };
+
+const filter = () => {
+  const config = {
+    url: `https://carrentalportal.arm-sc.com/api/car/filter?r1=${Range.min}&r2=${Range.max}&car_brand=${CarBrand}&search=${Search}`,
+    method: "get",
+  };
+  axios(config).then((response) => {
+    console.log(response?.data?.filter_data, "Filter api");
+    setcar(response?.data?.filter_data);
+  });
+}
+
   // console.log('sd');
 
   return (
@@ -75,40 +107,56 @@ export const Carlist = () => {
         data-element_type="section"
       >
         <div className="container mb-3">
-        <div className="card w-100 p-5" style={{boxShadow: "0px 0px 5px 5px lightgray"}}>
-          <div className="card-header mb-2 pt-0">
-            <h4 className="text-center">Advance Filter</h4>
+          <div
+            className="card w-100 p-5"
+            style={{ boxShadow: "0px 0px 5px 5px lightgray" }}
+          >
+            <div className="card-header mb-2 pt-0">
+              <h4 className="text-center">Advance Filter</h4>
+            </div>
+            <div className="row mt-2">
+              <div className="col-md-3">
+                <Form.Label>Set Price</Form.Label>
+                <MultiRangeSlider
+                  min={0}
+                  max={5000}
+                  onChange={handleRangeChange}
+                  // onChange={({ min, max }) =>
+                  //   SetRange(min, max)
+                  // }
+                />
+              </div>
+              <div className="col-md-3">
+                <Form.Label>Select Car Brands</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(e) => setCarBrand(e.target.value)}
+                >
+                  <option>Select Car Brands</option>
+                  {Brand?.map((e) => {
+                    return (
+                      <>
+                        <option value={e?.brand_Name}>{e?.brand_name}</option>
+                      </>
+                    );
+                  })}
+                </Form.Select>
+              </div>
+              <div className="col-md-3">
+                <Form.Label>Search</Form.Label>
+                <input
+                  type="search"
+                  placeholder="search here"
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <div className="col-md-3">
+                <button className="btn w-100 h-50" style={{ marginTop: "2em" }} onClick={filter}>
+                  Filter
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="row mt-2">
-            <div className="col-md-3">
-              <Form.Label>Set Price</Form.Label>
-              <MultiRangeSlider
-                    min={0}
-                    max={1000}
-                    onChange={({ min, max }) => setRange({ min, max })}
-                  />
-            </div>
-            <div className="col-md-3">
-              <Form.Label>Select Car Brands</Form.Label>
-              <Form.Select aria-label="Default select example">
-                <option>Select Car Brands</option>
-                <option value="Audi">Audi</option>
-                <option value="Mercedies">Mercedies</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Honda">Honda</option>
-                <option value="MG">MG</option>
-                <option value="Kia">Kia</option>
-              </Form.Select>
-            </div>
-            <div className="col-md-3">
-            <Form.Label>Search</Form.Label>
-              <input type="search" placeholder="search here" />
-            </div>
-             <div className="col-md-3">
-           <button className="btn w-100 h-50" style={{marginTop: "2em"}}>Filter</button>
-            </div>
-          </div>
-        </div>
         </div>
 
         <div class="elementor-container elementor-column-gap-default">
@@ -162,7 +210,9 @@ export const Carlist = () => {
       <div className="Card">
         <Container>
           <Row>
-            {carlist.map(function (value, index) {
+            {carlist?.length != 0 ?
+            <>
+            {carlist?.map(function (value, index) {
               let count;
               if (window.location.pathname == "/Cars") {
                 count = 10;
@@ -328,6 +378,12 @@ export const Carlist = () => {
                 );
               }
             })}
+            </>
+            :
+            <>
+            <h4 className="text-center">No Result Found</h4>
+            </>
+          }
           </Row>
         </Container>
       </div>
