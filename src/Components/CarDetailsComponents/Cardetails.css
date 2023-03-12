@@ -1,0 +1,49 @@
+.text{
+    color: #474fa0 !important;
+    font-family: "Inter", Sans-serif;
+}
+.bg-table{
+    background-color: #474fa0 !important;
+    color: white !important;
+    font-family: "Inter", Sans-serif;
+}
+.carousel .slider-wrapper {
+    overflow: hidden;
+    margin: auto;
+    width: 50%;
+    transition: height .15s ease-in;
+}
+.carousel .carousel-status {
+    position: absolute;
+    top: 0;
+    right: 132px;
+    padding: 5px;
+    font-size: 10px;
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 90%);
+    color: #fff;
+}
+.carousel .thumbs {
+    display: none;
+    transition: all .15s ease-in;
+    transform: translate3d(0, 0, 0);
+    position: relative;
+    list-style: none;
+    white-space: nowrap;
+}
+.car-details{
+    background-color: #474fa0;
+}
+.feature li{
+    list-style: none;
+    padding: 6px;
+}
+.feature li input{
+    width: 40px;
+    height: 20px;   
+
+}
+.feature li span{
+position: relative;
+bottom: 4px;
+
+}
