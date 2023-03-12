@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import MultiRangeSlider from "../MultiSlider/MultiRangeSlider";
-import ReactPaginate from "react-paginate";
 
 export const Carlist = () => {
   const [CurrentIndex, setCurrentIndex] = useState(0);
@@ -19,6 +18,7 @@ export const Carlist = () => {
   const [Search, setSearch] = useState("");
   const [CarBrand, setCarBrand] = useState("");
   const [Filter, setFilter] = useState([]);
+  const [Adon, setAdon] = useState("");
   const [Range, setRange] = useState({ min: 0, max: 5000 });
 
   // console.log(Range.max, "Range");
@@ -32,6 +32,8 @@ export const Carlist = () => {
       setCurrentIndex(CurrentIndex - 1);
     }
   };
+
+
 
   const setDataId = (dataid) => {
     // alert(dataid)
@@ -73,11 +75,11 @@ export const Carlist = () => {
     axios(options).then((response) => {
       console.log(response, "car list");
       const gruoupData = [];
-      for (let i = 0; i < response?.data?.length; i += 2) {
-        gruoupData.push(response?.data?.slice(i, i + 2));
+      for (let i = 0; i < response?.data?.length; i += 6) {
+        gruoupData.push(response?.data?.slice(i, i + 6));
       }
+      setcar(response?.data);
       setData(gruoupData);
-      setcar(response.data);
     });
   }, []);
 
@@ -113,8 +115,7 @@ export const Carlist = () => {
     });
   };
 
-  const Next = () => {};
-  // console.log('sd');
+  // console.log(carlist, "carlist");
 
   return (
     <>
