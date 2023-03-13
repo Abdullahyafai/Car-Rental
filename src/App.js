@@ -15,6 +15,7 @@ import CarContext from "./Context/CarContext";
 // import Gallery from "./Components/Gallery/Gallery";
 import CarGallery from "./Components/pages/CarGallery";
 import FAQ from "./Components/FAQ/FAQ";
+import Booking from "./Components/CarDetailsComponents/Booking";
 
 function App() {
   useEffect(() => {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/Cars" element={<Cars />} />
         <Route path="/login" element={<Login />} />
         <Route path="/CarDetail" element={<CarDetailComp />} />
+        <Route path="/booking" element={<Booking />} />
         <Route path="/Contact" element={<Contactus />} />
         <Route path="/Services" element={<Services />} />
         <Route path="/gallery" element={<CarGallery />} />

@@ -31,7 +31,7 @@
     white-space: nowrap;
 }
 .car-details{
-    background-color: #474fa0;
+    background-color: #FE5B3E;
 }
 .feature li{
     list-style: none;
@@ -46,4 +46,12 @@
 position: relative;
 bottom: 4px;
 
+}
+.bg-theme{
+    background-color: #FE5B3E;
+}
+.finaldetails{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

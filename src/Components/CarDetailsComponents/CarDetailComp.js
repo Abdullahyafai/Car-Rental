@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AboutHeader } from "../AboutusComponents/AboutHeader";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../layouts/Header";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
@@ -15,6 +15,9 @@ export const CarDetailComp = () => {
   const [Price, setPrice] = useState([]);
   const [Checkbox, setCheckbox] = useState([]);
   const [carimages, setcarimages] = useState([]);
+
+
+  const navigate = useNavigate();
   useEffect(() => {
     setcarimages(JSON.parse(car_detail.state.cardetails.car_images));
   }, [carimages]);
@@ -39,8 +42,8 @@ export const CarDetailComp = () => {
 const totalPrice = Price.reduce((acc, curr) => acc + curr,0) ;
 
 const carPrice = car_detail.state.cardetails.car_rent_price;
-console.log(totalPrice, "TotalPrice");
-  console.log(Price, "valuecheckbox");
+// console.log(totalPrice, "TotalPrice");
+//   console.log(Price, "valuecheckbox");
   
   useEffect(() => {
     const options = {
@@ -58,6 +61,11 @@ console.log(totalPrice, "TotalPrice");
     });
   }, []);
 
+const book = () =>{
+  navigate("/booking", {
+    state: { cardetails: car_detail.state.cardetails, Addons: Checkbox , Price: Price},
+  });
+}
 
 
   return (
@@ -97,7 +105,7 @@ console.log(totalPrice, "TotalPrice");
                   })}
                 </Carousel>
               </div>
-              <div className="car-details my-3 p-3 d-flex justify-content-between align-items-center">
+              <div className="car-details my-3 p-3 d-flex justify-content-between align-items-center bg-theme">
                 <h4 className="text-white">
                   {car_detail.state.cardetails.car_brand}&nbsp;&nbsp;
                   {car_detail.state.cardetails.car_name}
@@ -242,110 +250,7 @@ console.log(totalPrice, "TotalPrice");
                       </>
                     );
                   })}
-                  {/* <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Under Age Charges"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">Under Age Charges</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="VRF"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">VRF</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="SCDW"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">SCDW</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Double Mileage"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">Double Mileage</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Additional Driver"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">Additional Driver</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Infant Safety Seat"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder"> Infant Safety Seat</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Baby Safety Seat"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">Baby Safety Seat</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Road Side Assistance"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">Road Side Assistance</span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Collision Damage Waiver"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">
-                      Collision Damage Waiver
-                    </span>
-                  </li>
-                  <li>
-                    <input
-                      type={"checkbox"}
-                      value="10"
-                      name="Personal Accident Insurance"
-                      onChange={handlecheckbox}
-                      className="me-1"
-                    />
-                    <span className="text fw-bolder">
-                      Personal Accident Insurance
-                    </span>
-                  </li> */}
+                 
                 </ul>
                 <div className="car-details p-2">
                   <h6 className="text-light">Total Cost</h6>
@@ -356,7 +261,7 @@ console.log(totalPrice, "TotalPrice");
                 </div>
                 <div className="row p-2">
                   <span className="col-md-6 text-dark">DISCOUNT</span>
-                  <span className="col-md-6 text-dark text-end">$100</span>
+                  <span className="col-md-6 text-dark text-end">$0</span>
                 </div>
                 <div className="row p-2">
                   <span className="col-md-6 text-dark">VEHICLE EXTRAS</span>
@@ -367,9 +272,7 @@ console.log(totalPrice, "TotalPrice");
                   <span className="col-md-6 text-dark text-end">$ {parseInt(Number(carPrice) + Number(totalPrice))}</span>
                 </div>
                 <div className="mt-3">
-                  <Link to="/Cars">
-                    <button className="btn w-100 py-4">book now</button>
-                  </Link>
+                    <button className="btn w-100 py-4" onClick={book}>book now</button>
                 </div>
               </div>
             </div>
